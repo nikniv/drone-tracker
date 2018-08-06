@@ -1,0 +1,35 @@
+{
+  "name": "drone-tracker",
+  "version": "0.0.1",
+  "description": "Track location of drones in real-time",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha",
+    "lint": "./node_modules/eslint/bin/eslint.js ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niveditn/drone-tracker.git"
+  },
+  "keywords": [
+    "node.js",
+    "docker",
+    "drones"
+  ],
+  "author": "niveditn",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/niveditn/drone-tracker/issues"
+  },
+  "homepage": "https://github.com/niveditn/drone-tracker#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.2.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "mocha": "^5.2.0"
+  }
+}
