@@ -14,18 +14,20 @@ docker build -t drone-tracker .
 #### As a daemon in the background
 
 ```
-docker run -p 8080:3000 -p 8081:4000/udp -d drone-tracker
+docker run --rm -p 8080:3000 -p 8081:4000/udp -d drone-tracker
 ```
 
 #### In the foreground
 
 ```
-docker run -p 8080:3000 -p 8081:4000/udp -d drone-tracker
+docker run --rm -p 8080:3000 -p 8081:4000/udp -d drone-tracker
 ```
 
 The above will configure the app to listen to:
 - HTTP requests on: `http://localhost:8080`
 - UDP messages on: `http://localhost:8081`
+
+The `--rm` flag removes container after exiting to prevent container and memory clutter.
 
 ### Stop image
 
@@ -49,17 +51,21 @@ echo "This is my data" > /dev/udp/0.0.0.0/8080
 TODO
 
 ```
-curl -G http://localhost:8080/api/
+curl -G http://localhost:8080/
 ```
 
 ## Tests
 
+The following Docker commands will build and run the specified `npm test` script.
+
 ```
-npm run test
+docker build -t drone-tracker-test -f Dockerfile.test .
+docker run --rm drone-tracker-test
 ```
+
+You can also run tests locally with `npm run test:local` if needed.
 
 ## Lint
 
-```
-npm run lint
-```
+- Run ESLint tool: `npm run lint`
+- Autofix some lint issues: `npm run lintfix`
