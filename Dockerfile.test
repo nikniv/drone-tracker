@@ -12,8 +12,6 @@ RUN npm install
 # bundle app source
 COPY . .
 
-# EXPOSE 9000 9001
-
 ENV NODE_ENV test
 
 CMD [ "npm", "test" ]
