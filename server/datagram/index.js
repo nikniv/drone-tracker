@@ -1,10 +1,10 @@
 const { droneModel } = require('./../api/models')
-const { error, validate } = require('./utils')
+const { error, errorMessages, logger, validate } = require('./../utils')
 
 module.exports = async function (msg, rinfo) {
-  if (msg.length <= 1) return error('Empty UDP message')
+  if (msg.length <= 1) return error(errorMessages.EMPTY_UDP_MESSAGE)
 
-  console.log(`
+  logger(`
   ========== DATAGRAM RECEIVED ==========
     size:   ${rinfo.size} bytes
     from:   ${rinfo.address}:${rinfo.port}
@@ -16,13 +16,14 @@ module.exports = async function (msg, rinfo) {
       ? parseFloat(value)
       : value
   )
-  if (!validate(message)) {
-    return error('UDP message validation failed')
+
+  if (!message || !validate(message)) {
+    return logger(errorMessages.UDP_MESSAGE_VALIDATION_FAILED)
   }
 
   const result = await droneModel.updateDroneLocation(message)
 
-  console.log(`
+  logger(`
   ========== LOCATION REPORTED ==========
     uuid:       ${result.uuid}
     lat:        ${result.lat}
