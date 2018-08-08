@@ -1,5 +1,5 @@
 # Drone Tracker
-Track location of drones in real-time.
+An app to report and track location of drones!
 
 ## Assumptions
 
@@ -16,7 +16,8 @@ Track location of drones in real-time.
 UDP was used as protocol of choice because:
 
 - It has a comparatively smaller minimum packet size
-- Since location is transmitted every second, Drones can simply transmit their location to server without needing acknowledgement. This reduces modem network traffic costs.
+- Since location is transmitted every second, Drones can simply transmit their location to server without needing acknowledgement.
+- This reduces cellular modem network traffic costs.
 - Following this concept, we can further implement other compression methods like gzip to compress location data even more
 
 # Container setup
@@ -130,7 +131,7 @@ When drones report their location over the UDP channel, the size of the message 
   =======================================
 ```
 
-This is obtained from the implementation of the `dgram` node module. See [here](https://nodejs.org/api/dgram.html#dgram_event_message). 
+This is obtained from the implementation of the `dgram` node module. See [here](https://nodejs.org/api/dgram.html#dgram_event_message) for more details. 
 If we need to implement any further allowance logic based on message size, it can be done here.
 
 ## Lint
