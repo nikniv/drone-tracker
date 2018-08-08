@@ -11,7 +11,10 @@ Track location of drones in real-time.
 - Data is stored locally in app, under global variable named `global.drones`
 - To prepare for future database IO, async/await and Promise are used in controller and model functions
 
-**Note:** UDP was used as protocol of choice because:
+### Reasons for using UDP
+
+UDP was used as protocol of choice because:
+
 - It has a comparatively smaller minimum packet size
 - Since location is transmitted every second, Drones can simply transmit their location to server without needing acknowledgement. This reduces modem network traffic costs.
 - Following this concept, we can further implement other compression methods like gzip to compress location data even more
@@ -40,6 +43,7 @@ docker build -t drone-tracker .
 ### Deploy docker container
 
 The following commands will configure the app to listen to:
+
 - HTTP requests on: `http://localhost:8080`
 - UDP messages on: `http://localhost:8081`
 
@@ -116,7 +120,7 @@ curl -G http://localhost:8080/drones/incative
 ```
 
 ### Size of incoming data packet
-When drones report their location over the UDP channel, the size of the message content is logged on the server console, like so:
+When drones report their location over the UDP channel, the size of the message content is logged on the server console in bytes, like so:
 
 ```
   ========== DATAGRAM RECEIVED ==========
