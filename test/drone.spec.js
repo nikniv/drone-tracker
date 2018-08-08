@@ -1,26 +1,13 @@
 const chai = require('chai')
 const request = require('supertest')
 const expect = chai.expect
+const testData = require('./helpers/testData')
 const { httpServer: app } = require('./../app')
 
-describe('Drones', () => {
-  const tenSecondsAgo = new Date((Date.now() / 1000 - 10) * 1000)
-  const stationaryDrone = {
-    uuid: 'stationary-drone',
-    lat: 20,
-    long: 20,
-    updatedAt: tenSecondsAgo
-  }
-  const movingDrone = {
-    uuid: 'moving-drone',
-    lat: 30,
-    long: 30,
-    updatedAt: new Date()
-  }
-
+describe('Drones REST API', () => {
   beforeEach((done) => {
-    global.drones.push(stationaryDrone)
-    global.drones.push(movingDrone)
+    global.drones.push(testData.stationaryDrone)
+    global.drones.push(testData.movingDrone)
     done()
   })
 
@@ -51,7 +38,12 @@ describe('Drones', () => {
         .end((err, res) => {
           if (err) throw err
           expect(res.body.length).to.equal(1)
-          expect(res.body[0].uuid).to.equal(stationaryDrone.uuid)
+          const result = res.body[0]
+          const secondsSinceUpdate = (Date.now() - new Date(result.updatedAt).getTime()) / 1000
+          expect(result.uuid).to.equal(testData.stationaryDrone.uuid)
+          expect(result.lat).to.equal(testData.stationaryDrone.lat)
+          expect(result.long).to.equal(testData.stationaryDrone.long)
+          expect(secondsSinceUpdate).to.be.gte(10)
           done()
         })
     })
