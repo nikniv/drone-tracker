@@ -1,15 +1,28 @@
 # Drone Tracker
 Track location of drones in real-time.
 
-# Setup
+## Assumptions
 
-### Build image
+- Latitude range: `-90.000000` - `90.000000`
+- Longitude range: `-180.000000` - `180.000000`
+- Drone location data reporting: JSON string sent over UDP
+- Test cases cover REST API endpoints and Datagram module (for location reporting)
+
+# App setup
+
+### Build docker image
 
 ```
 docker build -t drone-tracker .
 ```
 
-### Deploy image
+### Deploy docker container
+
+The following commands will configure the app to listen to:
+- HTTP requests on: `http://localhost:8080`
+- UDP messages on: `http://localhost:8081`
+
+The `--rm` flag removes container after exiting to prevent container and memory clutter.
 
 #### As a daemon in the background
 
@@ -23,13 +36,7 @@ docker run --rm -p 8080:3000 -p 8081:4000/udp -d drone-tracker
 docker run --rm -p 8080:3000 -p 8081:4000/udp -d drone-tracker
 ```
 
-The above will configure the app to listen to:
-- HTTP requests on: `http://localhost:8080`
-- UDP messages on: `http://localhost:8081`
-
-The `--rm` flag removes container after exiting to prevent container and memory clutter.
-
-### Stop image
+### Stop docker container
 
 ```
 docker ps
@@ -40,19 +47,32 @@ docker stop <CONTAINER ID>
 
 ### UDP Datagrams
 
-TODO
+The application accepts UDP data packets containing drone location information.
+
+The data packet needs to be in stringified JSON format, containing `uuid`, `lat` and `long` values.
+
+e.g.
 
 ```
-echo "This is my data" > /dev/udp/0.0.0.0/8080
+    {
+        "uuid": "my-drone",
+        "lat": -31.213123,
+        "long": 89.189876
+    }
+```
+
+To test the datagram module, you can send UDP messages using the terminal, as follows:
+
+```
+echo '{ "uuid": "my-drone", "lat": -31.213123, "long": 89.189876 }' > /dev/udp/0.0.0.0/8081
 ```
 
 ### REST API
 
-TODO
+Get a list of:
 
-```
-curl -G http://localhost:8080/
-```
+- **All drones**: `curl -G http://localhost:8080/drones`
+- **Inactive drones**: `curl -G http://localhost:8080/drones/incative`
 
 ## Tests
 
@@ -64,6 +84,8 @@ docker run --rm drone-tracker-test
 ```
 
 You can also run tests locally with `npm run test:local` if needed.
+
+Test files are located in `/test` folder.
 
 ## Lint
 
