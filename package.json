@@ -4,6 +4,7 @@
   "description": "Track location of drones in real-time",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "./node_modules/mocha/bin/mocha --exit",
     "test:local": "NODE_ENV=test HTTP_PORT=5000 UDP_PORT=5001 ./node_modules/mocha/bin/mocha",
     "lint": "./node_modules/eslint/bin/eslint.js .",

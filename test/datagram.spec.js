@@ -5,20 +5,27 @@ const testData = require('./helpers/testData')
 const { droneModel } = require('./../server/api/models')
 const { sendUDPMessage, closeClient } = require('./helpers/udpClient')
 
+// timeout to be used in test cases to allow for datagram processing
+const { UDP_TIMEOUT = 30 } = process.env
+// stub to be used during validation tests
+let updateDroneLocationStub
+
 const validationFailureHelper = (message, done) => sendUDPMessage(message, () => {
   // using timeout to allow for processing time
   setTimeout(() => {
     expect(global.drones).to.have.length(4)
+    expect(updateDroneLocationStub.called).to.equal(false)
     done()
-  }, 30)
+  }, UDP_TIMEOUT)
 })
 
 const validationSuccessHelper = (message, done) => sendUDPMessage(message, () => {
   // using timeout to allow for processing time
   setTimeout(() => {
     expect(global.drones).to.have.length(5)
+    expect(updateDroneLocationStub.called).to.equal(true)
     done()
-  }, 30)
+  }, UDP_TIMEOUT)
 })
 
 describe('Datagram', () => {
@@ -27,12 +34,14 @@ describe('Datagram', () => {
     done()
   })
 
-  afterEach(() => {
+  afterEach((done) => {
     global.drones.splice(3, 2)
+    done()
   })
 
-  after(() => {
+  after((done) => {
     closeClient()
+    done()
   })
 
   describe('Location reporting', () => {
@@ -41,12 +50,20 @@ describe('Datagram', () => {
         expect(global.drones).to.have.length(4)
       })
 
-      before(() => {
-        sinon.stub(droneModel, 'updateDroneLocation').callsFake((payload) => {
+      before((done) => {
+        // stub model function because we just want to test validation logic
+        updateDroneLocationStub = sinon.stub(droneModel, 'updateDroneLocation')
+        updateDroneLocationStub.callsFake((payload) => {
           const drone = { ...payload, updatedAt: new Date() }
           global.drones.push(drone)
           return drone
         })
+        done()
+      })
+
+      after((done) => {
+        updateDroneLocationStub.restore()
+        done()
       })
 
       context('should fail for', () => {
@@ -149,7 +166,7 @@ describe('Datagram', () => {
           expect(result.long).to.equal(long)
           expect(result).to.have.property('updatedAt')
           done()
-        }, 30)
+        }, UDP_TIMEOUT)
       })
     })
   })
